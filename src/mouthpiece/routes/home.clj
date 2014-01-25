@@ -2,6 +2,7 @@
   (:require [compojure.core :refer :all]
             [mouthpiece.views.layout :as layout]
             [hiccup.form :refer :all]
+            [hiccup.element :refer [image]]
             [mouthpiece.models.db :as db]))
 
 (defn format-time [timestamp]
@@ -9,25 +10,43 @@
       (java.text.SimpleDateFormat.)
       (.format timestamp)))
 
+(defn show-message [message timestamp]
+  [:div
+   [:blockquote message
+    [:cite (format-time timestamp)]]
+   [:hr]])
+
 (defn show-messages []
-  [:ul.messages
+  [:div
    (for [{:keys [message timestamp]}
          (db/read-messages)]
-     [:li
-      [:blockquote message]
-      [:time (format-time timestamp)]])])
+     (show-message message timestamp))])
+
+(defn comment-box [message]
+  [:div {:class "panel"}
+   (form-to [:post "/"]
+            [:label "Message: "]
+            (text-area {:rows 20 :cols 40} "message" message)
+            [:br]
+            (submit-button {:class "small round button"} "Comment"))])
 
 (defn home [& [message error]]
-  (layout/common [:h1 "mouthpiece"]
-                 [:p "Welcome, say whatever you want."]
-                 [:p error]
-                 (show-messages)
+  (layout/common [:div {:class "row"}
+                  [:div {:class "small-1 columns"}
+                   (image {:style "height:60px;"} "/img/megafono_256.png" "Megaphone icon")]
+                  [:div {:class "small-11 columns"}
+                   [:h1 "Mouthpiece"]]
+                  [:div {:class "small-12 columns"}
+                   [:p "Welcome, say whatever you want."]]]
                  [:hr]
-                 (form-to [:post "/"]
-                          [:p "Message: "]
-                          (text-area {:rows 10 :cols 40} "message" message)
-                          [:br]
-                          (submit-button "comment"))))
+                 [:div {:class "row"}
+                  [:div {:class "small-6 columns"}
+                   (show-messages)]
+                  [:div {:class "small-6 columns"}
+                   (when error
+                     [:div {:class "alert-box warning round"}
+                      error])
+                   (comment-box message)]]))
 
 (defn save-message [message]
   (cond (empty? message) (home message "Don't you have something to say?")

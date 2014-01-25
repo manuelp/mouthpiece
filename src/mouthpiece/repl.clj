@@ -41,6 +41,8 @@
 
   (stop-server)
 
+  server
+
   )
 
 
