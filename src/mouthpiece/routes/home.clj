@@ -10,17 +10,18 @@
       (java.text.SimpleDateFormat.)
       (.format timestamp)))
 
-(defn show-message [message timestamp]
-  [:div
-   [:blockquote message
-    [:cite (format-time timestamp)]]
-   [:hr]])
+(defn show-message [message id timestamp]
+  [:div {:class "panel"}
+   [:p message]
+   [:span {:class "round label"} id]
+   [:span {:class "secondary label timestamp"}
+    (format-time timestamp)]])
 
 (defn show-messages []
   [:div
-   (for [{:keys [message timestamp]}
+   (for [{:keys [message id timestamp]}
          (db/read-messages)]
-     (show-message message timestamp))])
+     (show-message message id timestamp))])
 
 (defn comment-box [message]
   [:div {:class "panel"}
@@ -28,7 +29,7 @@
             [:label "Message: "]
             (text-area {:rows 20 :cols 40} "message" message)
             [:br]
-            (submit-button {:class "small round button"} "Comment"))])
+            (submit-button {:class "small round success button"} "Comment"))])
 
 (defn home [& [message error]]
   (layout/common [:div {:class "row"}
@@ -40,9 +41,9 @@
                    [:p "Welcome, say whatever you want."]]]
                  [:hr]
                  [:div {:class "row"}
-                  [:div {:class "small-6 columns"}
+                  [:div {:class "small-12 large-6 columns"}
                    (show-messages)]
-                  [:div {:class "small-6 columns"}
+                  [:div {:class "small-12 large-6 columns"}
                    (when error
                      [:div {:class "alert-box warning round"}
                       error])
