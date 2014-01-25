@@ -3,7 +3,8 @@
             [mouthpiece.views.layout :as layout]
             [hiccup.form :refer :all]
             [hiccup.element :refer [image]]
-            [mouthpiece.models.db :as db]))
+            [mouthpiece.models.db :as db]
+            [markdown.core :as md]))
 
 (defn format-time [timestamp]
   (-> "dd/MM/yyyy HH:mm"
@@ -12,7 +13,8 @@
 
 (defn show-message [message id timestamp]
   [:div {:class "panel"}
-   [:p message]
+   ;[:p message]
+   (md/md-to-html-string message)
    [:span {:class "round label"} id]
    [:span {:class "secondary label timestamp"}
     (format-time timestamp)]])
