@@ -2,7 +2,7 @@
   (:require [compojure.core :refer :all]
             [mouthpiece.views.layout :as layout]
             [hiccup.form :refer :all]
-            [hiccup.element :refer [image]]
+            [hiccup.element :refer [image link-to]]
             [mouthpiece.models.db :as db]
             [markdown.core :as md]))
 
@@ -16,7 +16,7 @@
    ;[:p message]
    (md/md-to-html-string message)
    [:span {:class "round label"} id]
-   [:span {:class "secondary label timestamp"}
+   [:span {:class "secondary label"}
     (format-time timestamp)]])
 
 (defn show-messages []
@@ -28,10 +28,16 @@
 (defn comment-box [message]
   [:div {:class "panel"}
    (form-to [:post "/"]
-            [:label "Message: "]
-            (text-area {:rows 20 :cols 40} "message" message)
-            [:br]
-            (submit-button {:class "small round success button"} "Comment"))])
+            [:div {:class "row"}
+             [:label "Message: "]
+             (text-area {:rows 6 :cols 40} "message" message)]
+            [:div {:class "row"}
+             [:p "Messages can be written in "
+              (link-to "https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"
+                       "Markdown")
+              "."]]
+            [:div {:class "row"}
+             (submit-button {:class "small round success button"} "Comment")])])
 
 (defn home [& [message error]]
   (layout/common [:div {:class "row"}

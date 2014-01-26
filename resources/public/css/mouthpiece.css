@@ -1,3 +1,7 @@
 .timestamp {
   font-size: x-small;
 }
+
+textarea {
+  height: auto;
+}
