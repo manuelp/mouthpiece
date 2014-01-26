@@ -34,8 +34,7 @@
             [:div {:class "row"}
              [:p "Messages can be written in "
               (link-to "https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"
-                       "Markdown")
-              "."]]
+                       "Markdown") "."]]
             [:div {:class "row"}
              (submit-button {:class "small round success button"} "Comment")])])
 
@@ -55,7 +54,14 @@
                    (when error
                      [:div {:class "alert-box warning round"}
                       error])
-                   (comment-box message)]]))
+                   (comment-box message)]]
+
+                 [:div {:class "row"}
+                  [:hr]
+                  [:p (link-to "https://github.com/manuelp/mouthpiece" "Mouthpiece")
+                   " &copy; 2014 Manuel Paccagnella &mdash; Released under the "
+                   (link-to "http://www.eclipse.org/legal/epl-v10.html"
+                            "Eclipse Public License 1.0")]]))
 
 (defn save-message [message]
   (cond (empty? message) (home message "Don't you have something to say?")
