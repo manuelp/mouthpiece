@@ -30,6 +30,11 @@
                       [:message :timestamp]
                       [message (new java.util.Date)])))
 
+(defn delete-message [id]
+  (sql/with-connection
+   db
+   (sql/do-commands (str "DELETE FROM mouthpiece WHERE ID=" id))))
+
 (comment
 
   (create-mouthpiece-table)
@@ -37,6 +42,8 @@
   (save-message "Something very interesting.")
 
   (read-messages)
+
+  (delete-message 12)
 
   )
 

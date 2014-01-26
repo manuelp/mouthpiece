@@ -4,7 +4,8 @@
             [hiccup.form :refer :all]
             [hiccup.element :refer [image link-to]]
             [mouthpiece.models.db :as db]
-            [markdown.core :as md]))
+            [markdown.core :as md]
+            [ring.util.response :refer [redirect]]))
 
 (defn format-time [timestamp]
   (-> "dd/MM/yyyy HH:mm"
@@ -67,8 +68,17 @@
   (cond (empty? message) (home message "Don't you have something to say?")
         :else (do
                 (db/save-message message)
-                (home))))
+                (redirect "/"))))
+
+(defn delete-message [token id]
+  (let [required-token (System/getenv "MOUTHPIECE_TOKEN")]
+    (when (and (not (empty? required-token))
+               (= token required-token))
+      (println "Deleting message with ID " id)
+      (db/delete-message id))
+    (redirect "/")))
 
 (defroutes home-routes
   (GET "/" [] (home))
-  (POST "/" [message] (save-message message)))
+  (POST "/" [message] (save-message message))
+  (GET "/delete/:token/:id" [token id] (delete-message token id)))
