@@ -1,0 +1,47 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          mouthpiece
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: Start/stop mouthpiece server
+### END INIT INFO
+
+WORK_DIR="/opt/mouthpiece"
+JAR="mouthpiece-0.1.0-standalone.jar"
+USER="mouthpiece"
+DAEMON="/usr/bin/java"
+DAEMON_ARGS="-server -jar $WORK_DIR/$JAR"
+
+#export MOUTHPIECE_TOKEN="<TOKEN>"
+
+start () {
+  echo "Starting mouthpiece..."
+  if [ ! -f $WORK_DIR/pid ]; then
+    start-stop-daemon --start --verbose --background --chdir $WORK_DIR --exec $DAEMON \
+      --pidfile $WORK_DIR/mouthpiece.pid --chuid "$USER" --make-pidfile -- $DAEMON_ARGS 2>/dev/null
+  else
+    echo "mouthpiece is already running..."
+  fi
+}
+
+stop () {
+    echo "Stopping mouthpiece..."
+    start-stop-daemon --stop --exec $DAEMON --pidfile $WORK_DIR/mouthpiece.pid
+    rm $WORK_DIR/mouthpiece.pid
+}
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        stop
+        start
+    ;;
+esac
