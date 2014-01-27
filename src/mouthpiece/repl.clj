@@ -28,7 +28,7 @@
                     :auto-reload? true
                     :destroy destroy
                     :join true}))
-    (conj home/auth-tokens "std-password") ; Add standard password as a fallback
+    (swap! home/auth-tokens #(conj % "std-password")) ; Add standard password as a fallback
     (println (str "You can view the site at http://localhost:" port))))
 
 (defn stop-server []

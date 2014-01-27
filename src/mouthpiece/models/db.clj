@@ -1,5 +1,6 @@
 (ns mouthpiece.models.db
-  (:require [clojure.java.jdbc :as sql])
+  (:require [clojure.java.jdbc :as sql]
+            [clojure.math.numeric-tower :as math])
   (:import java.sql.DriverManager))
 
 (def db {:classname "org.sqlite.JDBC"
@@ -15,13 +16,35 @@
                      [:message "TEXT"])
    (sql/do-commands "CREATE INDEX timestamp_index ON mouthpiece (timestamp)")))
 
-(defn read-messages []
+(defn read-messages [page size]
   (sql/with-connection
    db
    (sql/with-query-results
     res
-    ["SELECT * FROM mouthpiece ORDER BY timestamp DESC"]
+    ["SELECT * FROM mouthpiece ORDER BY timestamp DESC LIMIT ?, ?"
+     (* (dec page) size)
+     size]
     (doall res))))
+
+
+
+(defn total-number []
+  (-> (sql/with-connection
+       db
+       (sql/with-query-results
+        res
+        ["SELECT count(*) as num from mouthpiece"]
+        (doall res)))
+      first
+      :num))
+
+(defn num-pages
+  "Calculates the number of pages with `size` messages given
+  the total number of messages saved in the DB."
+  [size]
+  (-> (/ (total-number) size)
+      math/ceil
+      int))
 
 (defn save-message [message]
   (sql/with-connection

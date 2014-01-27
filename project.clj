@@ -10,7 +10,8 @@
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
                  [markdown-clj "0.9.41"]
-                 [lein-light-nrepl "0.0.13"]]
+                 [lein-light-nrepl "0.0.13"]
+                 [org.clojure/math.numeric-tower "0.0.4"]]
   :plugins [[lein-ring "0.8.7"]]
   :ring {:handler mouthpiece.handler/app
          :init mouthpiece.handler/init
