@@ -1,7 +1,8 @@
 (ns mouthpiece.repl
   (:use mouthpiece.handler
         ring.server.standalone
-        [ring.middleware file-info file]))
+        [ring.middleware file-info file])
+  (:require [mouthpiece.routes.home :as home]))
 
 (defonce server (atom nil))
 
@@ -27,6 +28,7 @@
                     :auto-reload? true
                     :destroy destroy
                     :join true}))
+    (conj home/auth-tokens "std-password") ; Add standard password as a fallback
     (println (str "You can view the site at http://localhost:" port))))
 
 (defn stop-server []

@@ -7,6 +7,10 @@
             [markdown.core :as md]
             [ring.util.response :refer [redirect]]))
 
+(def auth-tokens
+  "Ordered sequence of valid authentication tokens for administrative tasks."
+  [(System/getenv "MOUTHPIECE_TOKEN")])
+
 (defn format-time [timestamp]
   (-> "dd/MM/yyyy HH:mm"
       (java.text.SimpleDateFormat.)
@@ -72,13 +76,18 @@
                 (db/save-message message)
                 (redirect "/"))))
 
+(defn- required-token
+  "Returns the first valid (not nil and not empty) authorization token configured."
+  [tokens]
+  (letfn [(nothing? [v]
+                    (or (nil? v) (= "" v)))]
+    (first (drop-while nothing? tokens))))
+
 (defn delete-message [token id]
-  (let [required-token (System/getenv "MOUTHPIECE_TOKEN")]
-    (when (and (not (empty? required-token))
-               (= token required-token))
-      (println "Deleting message with ID " id)
-      (db/delete-message id))
-    (redirect "/")))
+  (when (= token (required-token auth-tokens))
+    (println "Deleting message with ID " id)
+    (db/delete-message id))
+  (redirect "/"))
 
 (defroutes home-routes
   (GET "/" [] (home))
