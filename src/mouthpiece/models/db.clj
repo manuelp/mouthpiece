@@ -62,6 +62,9 @@
 
   (save-message "Something very interesting.")
 
+  (for [n (range 100)]
+    (save-message "Something very interesting."))
+
   (read-messages)
 
   (delete-message 12)
