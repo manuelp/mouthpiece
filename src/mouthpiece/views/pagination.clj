@@ -1,0 +1,54 @@
+(ns mouthpiece.views.pagination
+  (:require [mouthpiece.models.db :as db]
+            [hiccup.element :refer [link-to]]))
+
+(defn previous-page [page size]
+  {:link (if (> page 1)
+           (str "/page/" (dec page))
+           "")
+   :classes (str "arrow" (when (= page 1) " unavailable"))})
+
+(defn next-page [page size]
+  {:link (if (< page (db/num-pages size))
+           (str "/page/" (inc page))
+           "")
+   :classes (str "arrow" (when (= page (db/num-pages size))
+                           " unavailable"))})
+
+(defn current-page [n page]
+  (if (not= n "...")
+    {:link (link-to (str "/page/" n) n)
+     :classes (cond (= n page) {:class "current"}
+                    :else {})}
+    {:link "&hellip;"
+     :classes {:class "unavailable"}}))
+
+(defn compressed-pages-list
+  "Produces a seq with the page numbers (starting from one) given the page size
+  and the current page number, retaining only the first and last three
+  (plus the current one)."
+  [page size]
+  (let [num-pages (db/num-pages size)]
+    (if (< num-pages 10)
+      (range 1 num-pages)
+      (let [start (range 1 (inc 3))
+            end (range (- num-pages 2) (inc num-pages))
+            middle (if (or (< page 4) (> page (- num-pages 3)))
+                     "..."
+                     [(when (> page 4) "...")
+                      page
+                      (when (< page (- num-pages 3))
+                        "...")])]
+        (remove nil? (flatten [start middle end]))))))
+
+(defn pagination [page size]
+  (let [prev-page (previous-page page size)
+        next-page (next-page page size)]
+    [:ul {:class "pagination"}
+     [:li {:class (:classes prev-page)}
+      (link-to (:link prev-page) "&laquo;")]
+     (for [n (compressed-pages-list page size)]
+       (let [page (current-page n page)]
+         [:li (:classes page) (:link page)]))
+     [:li {:class (:classes next-page)}
+      (link-to (:link next-page) "&raquo;")]]))
