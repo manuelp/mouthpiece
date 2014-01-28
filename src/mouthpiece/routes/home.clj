@@ -11,6 +11,8 @@
   "Ordered sequence of valid authentication tokens for administrative tasks."
   (atom [(System/getenv "MOUTHPIECE_TOKEN")]))
 
+(def page-size 15)
+
 (defn format-time [timestamp]
   (-> "dd/MM/yyyy HH:mm"
       (java.text.SimpleDateFormat.)
@@ -91,7 +93,8 @@
                       error])
                    (comment-box message)]
                   [:div {:class "small-12 large-6 columns"}
-                   (pagination page size)
+                   (if (> (db/num-pages page-size) 1)
+                     (pagination page size))
                    (show-messages page size)]]
 
                  [:div {:class "row"}
@@ -102,7 +105,7 @@
                             "Eclipse Public License 1.0")]]))
 
 (defn save-message [message]
-  (cond (empty? message) (home 1 15 message "Don't you have something to say?")
+  (cond (empty? message) (home 1 page-size message "Don't you have something to say?")
         :else (do
                 (db/save-message message)
                 (redirect "/"))))
@@ -121,7 +124,7 @@
   (redirect "/"))
 
 (defroutes home-routes
-  (GET "/" [] (home 1 15))
+  (GET "/" [] (home 1 page-size))
   (POST "/" [message] (save-message message))
-  (GET "/page/:n" [n] (home (Integer/parseInt n) 15))
+  (GET "/page/:n" [n] (home (Integer/parseInt n) page-size))
   (GET "/delete/:token/:id" [token id] (delete-message token id)))

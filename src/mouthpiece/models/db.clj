@@ -26,8 +26,6 @@
      size]
     (doall res))))
 
-
-
 (defn total-number []
   (-> (sql/with-connection
        db
