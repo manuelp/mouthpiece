@@ -1,4 +1,4 @@
-(defproject mouthpiece "0.1.1-SNAPSHOT"
+(defproject mouthpiece "0.1.1"
   :description "Simple anonymous guestbook, to spread ideas."
   :url "https://github.com/manuelp/mouthpiece"
   :license {:name "Eclipse Public License"
