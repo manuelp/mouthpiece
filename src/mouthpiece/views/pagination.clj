@@ -23,7 +23,7 @@
   [page size]
   (let [num-pages (db/num-pages size)]
     (if (< num-pages 10)
-      (range 1 num-pages)
+      (range 1 (inc num-pages))
       (compressed-page-list num-pages page))))
 
 ;; Here comes the view generation functions
