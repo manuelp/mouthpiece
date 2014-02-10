@@ -81,6 +81,6 @@
                  (let [{:keys [message id timestamp]}
                        (db/read-message id)]
                    [:div {:class "row"}
-                    [:div {:class "small-6 medium-6 large-6"}
+                    [:div {:class "small-8 medium-8 large-8"}
                      (show-message message id timestamp)]])
                  (footer)))

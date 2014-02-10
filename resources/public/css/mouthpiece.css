@@ -9,3 +9,7 @@ textarea {
 .id-label:hover {
   color: yellow;
 }
+
+.syntaxhighlighter {
+  font-size: small !important;
+}
