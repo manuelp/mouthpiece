@@ -18,7 +18,7 @@
   [:div {:class "panel"}
    (md/md-to-html-string message)
    [:a {:class "round label id-label"
-        :href (str "message/" id)} id]
+        :href (str "/message/" id)} id]
    [:span {:class "secondary label"}
     (format-time timestamp)]])
 
@@ -44,7 +44,9 @@
 (defn- header []
   [:div {:class "row"}
    [:div {:class "small-1 columns"}
-    (image {:style "height:60px;"} "/img/megafono_256.png" "Megaphone icon")]
+    (link-to "/" (image {:style "height:60px;"}
+                        "/img/megafono_256.png"
+                        "Megaphone icon"))]
    [:div {:class "small-11 columns"}
     [:h1 "Mouthpiece"]]
    [:div {:class "small-12 columns"}
@@ -60,9 +62,7 @@
 
 (defn home [page size & [[message error]]]
   (layout/common (header)
-
                  [:hr]
-
                  [:div {:class "row"}
                   [:div {:class "small-12 large-6 columns"}
                    (when error
@@ -73,7 +73,6 @@
                    (if (> (db/num-pages page-size) 1)
                      (pagination/pagination page size))
                    (show-messages page size)]]
-
                  (footer)))
 
 (defn message-page [id]

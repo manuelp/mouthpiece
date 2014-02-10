@@ -3,6 +3,7 @@
 ## 0.2.0-SNAPSHOT
 
 * Permalink and dedicated page for every message.
+* Logo in the header is also a link to the homepage.
 
 ## 0.1.0
 
