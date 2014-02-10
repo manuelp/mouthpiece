@@ -1,6 +1,6 @@
 (ns mouthpiece.routes.home
   (:require [compojure.core :refer :all]
-            [mouthpiece.views.core :refer [home page-size]]
+            [mouthpiece.views.core :refer [home page-size message-page]]
             [mouthpiece.models.db :as db]
             [ring.util.response :refer [redirect]]))
 
@@ -31,5 +31,6 @@
 (defroutes home-routes
   (GET "/" [] (home 1 page-size))
   (POST "/" [message] (save-message message))
+  (GET "/message/:id" [id] (message-page id))
   (GET "/page/:n" [n] (home (Integer/parseInt n) page-size))
   (GET "/delete/:token/:id" [token id] (delete-message token id)))

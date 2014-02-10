@@ -17,7 +17,8 @@
 (defn show-message [message id timestamp]
   [:div {:class "panel"}
    (md/md-to-html-string message)
-   [:span {:class "round label"} id]
+   [:a {:class "round label id-label"
+        :href (str "message/" id)} id]
    [:span {:class "secondary label"}
     (format-time timestamp)]])
 
@@ -40,14 +41,25 @@
             [:div {:class "row"}
              (submit-button {:class "small round success button"} "Comment")])])
 
+(defn- header []
+  [:div {:class "row"}
+   [:div {:class "small-1 columns"}
+    (image {:style "height:60px;"} "/img/megafono_256.png" "Megaphone icon")]
+   [:div {:class "small-11 columns"}
+    [:h1 "Mouthpiece"]]
+   [:div {:class "small-12 columns"}
+    [:p "Welcome, say whatever you want."]]])
+
+(defn- footer []
+  [:div {:class "row"}
+   [:hr]
+   [:p (link-to "https://github.com/manuelp/mouthpiece" "Mouthpiece")
+    " &copy; 2014 Manuel Paccagnella &mdash; Released under the "
+    (link-to "http://www.eclipse.org/legal/epl-v10.html"
+             "Eclipse Public License 1.0")]])
+
 (defn home [page size & [[message error]]]
-  (layout/common [:div {:class "row"}
-                  [:div {:class "small-1 columns"}
-                   (image {:style "height:60px;"} "/img/megafono_256.png" "Megaphone icon")]
-                  [:div {:class "small-11 columns"}
-                   [:h1 "Mouthpiece"]]
-                  [:div {:class "small-12 columns"}
-                   [:p "Welcome, say whatever you want."]]]
+  (layout/common (header)
 
                  [:hr]
 
@@ -62,9 +74,14 @@
                      (pagination/pagination page size))
                    (show-messages page size)]]
 
-                 [:div {:class "row"}
-                  [:hr]
-                  [:p (link-to "https://github.com/manuelp/mouthpiece" "Mouthpiece")
-                   " &copy; 2014 Manuel Paccagnella &mdash; Released under the "
-                   (link-to "http://www.eclipse.org/legal/epl-v10.html"
-                            "Eclipse Public License 1.0")]]))
+                 (footer)))
+
+(defn message-page [id]
+  (layout/common (header)
+                 [:hr]
+                 (let [{:keys [message id timestamp]}
+                       (db/read-message id)]
+                   [:div {:class "row"}
+                    [:div {:class "small-6 medium-6 large-6"}
+                     (show-message message id timestamp)]])
+                 (footer)))

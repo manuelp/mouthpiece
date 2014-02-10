@@ -26,6 +26,14 @@
      size]
     (doall res))))
 
+(defn read-message [id]
+  (sql/with-connection
+   db
+   (sql/with-query-results
+    res
+    ["SELECT * FROM mouthpiece WHERE id=?" id]
+    (first res))))
+
 (defn total-number []
   (-> (sql/with-connection
        db
