@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+* Fixed message width in dedicated pages with small screens.
+
 ## 0.2.0
 
 * Permalink and dedicated page for every message.
