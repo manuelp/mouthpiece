@@ -1,4 +1,4 @@
-(defproject mouthpiece "0.2.1"
+(defproject mouthpiece "0.2.2-SNAPSHOT"
   :description "Simple anonymous guestbook, to spread ideas."
   :url "https://github.com/manuelp/mouthpiece"
   :license {:name "Eclipse Public License"
@@ -21,4 +21,5 @@
                                  :stacktraces? false
                                  :auto-reload? false}}
              :dev {:dependencies [[ring-mock "0.1.5"]
-                                  [ring/ring-devel "1.2.0"]]}})
+                                  [ring/ring-devel "1.2.0"]]
+                   :ring {:open-browser? false}}})

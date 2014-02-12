@@ -41,29 +41,8 @@
             [:div {:class "row"}
              (submit-button {:class "small round success button"} "Comment")])])
 
-(defn- header []
-  [:div {:class "row"}
-   [:div {:class "small-1 columns"}
-    (link-to "/" (image {:style "height:60px;"}
-                        "/img/megafono_256.png"
-                        "Megaphone icon"))]
-   [:div {:class "small-11 columns"}
-    [:h1 "Mouthpiece"]]
-   [:div {:class "small-12 columns"}
-    [:p "Welcome, say whatever you want."]]])
-
-(defn- footer []
-  [:div {:class "row"}
-   [:hr]
-   [:p (link-to "https://github.com/manuelp/mouthpiece" "Mouthpiece")
-    " &copy; 2014 Manuel Paccagnella &mdash; Released under the "
-    (link-to "http://www.eclipse.org/legal/epl-v10.html"
-             "Eclipse Public License 1.0")]])
-
 (defn home [page size & [[message error]]]
-  (layout/common (header)
-                 [:hr]
-                 [:div {:class "row"}
+  (layout/common [:div {:class "row"}
                   [:div {:class "small-12 large-6 columns"}
                    (when error
                      [:div {:class "alert-box warning round"}
@@ -72,15 +51,11 @@
                   [:div {:class "small-12 large-6 columns"}
                    (if (> (db/num-pages page-size) 1)
                      (pagination/pagination page size))
-                   (show-messages page size)]]
-                 (footer)))
+                   (show-messages page size)]]))
 
 (defn message-page [id]
-  (layout/common (header)
-                 [:hr]
-                 (let [{:keys [message id timestamp]}
+  (layout/common (let [{:keys [message id timestamp]}
                        (db/read-message id)]
                    [:div {:class "row"}
                     [:div {:class "small-12 medium-10 large-8"}
-                     (show-message message id timestamp)]])
-                 (footer)))
+                     (show-message message id timestamp)]])))
