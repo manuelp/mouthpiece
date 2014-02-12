@@ -3,26 +3,24 @@
             [hiccup.element :refer [image link-to]]))
 
 (defn include-syntax-highlighter []
-  (letfn [(append-prefix [dir f]
-                         (str "/" dir "/syntax-highlighter/" f))]
-    (concat (map (comp first include-js (partial append-prefix "js"))
-                 ["shCore.js"
-                  "shBrushClojure.js"
-                  "shBrushJScript.js"
-                  "shBrushBash.js"
-                  "shBrushJava.js"
-                  "shBrushPython.js"
-                  "shBrushRuby.js"
-                  "shBrushXml.js"
-                  "shBrushScala.js"
-                  "shBrushSass.js"
-                  "shBrushSql.js"])
-            (map (comp first include-css (partial append-prefix "css"))
-                 ["shCore.css"
-                  "shThemeDefault.css"])
-            [[:script {:type "text/javascript"}
-              (str "SyntaxHighlighter.defaults['class-name'] = 'code-block';"
-                   "SyntaxHighlighter.all();")]])))
+  (concat
+   (apply include-js (map #(str "/js/syntax-highlighter/" %)
+                          ["shCore.js"
+                           "shBrushClojure.js"
+                           "shBrushJScript.js"
+                           "shBrushBash.js"
+                           "shBrushJava.js"
+                           "shBrushPython.js"
+                           "shBrushRuby.js"
+                           "shBrushXml.js"
+                           "shBrushScala.js"
+                           "shBrushSass.js"
+                           "shBrushSql.js"]))
+   (apply include-css (map #(str "/css/syntax-highlighter/" %)
+                           ["shCore.css"
+                            "shThemeDefault.css"]))
+   [[:script {:type "text/javascript"}
+     "SyntaxHighlighter.all();"]]))
 
 (defn- header []
   [:div {:class "row"}
